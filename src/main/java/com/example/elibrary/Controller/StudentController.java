@@ -2,8 +2,10 @@ package com.example.elibrary.Controller;
 
 import com.example.elibrary.Service.StudentService;
 import com.example.elibrary.models.Student;
+import com.example.elibrary.models.request.StudentCreateRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +20,8 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Student> saveStudent(@Valid @RequestBody
-                                                   StudentCreateRequest studentCreateRequest){
-        return new ResponseEntity<>(studentService.saveStudent(studentCreateRequest));
+                                               StudentCreateRequest studentCreateRequest){
+        return new ResponseEntity<>(studentService.saveStudent(studentCreateRequest),
+                HttpStatus.CREATED);
     }
 }
