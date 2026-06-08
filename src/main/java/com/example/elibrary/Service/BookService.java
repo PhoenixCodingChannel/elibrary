@@ -8,10 +8,10 @@ import com.example.elibrary.models.enums.BookFilterType;
 import com.example.elibrary.models.request.BookCreateRequest;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookService {
@@ -53,5 +53,9 @@ public class BookService {
             }
         }
         return null;
+    }
+
+    public Optional<Book> findBookById(int bookId) {
+        return bookRepository.findById(bookId);
     }
 }

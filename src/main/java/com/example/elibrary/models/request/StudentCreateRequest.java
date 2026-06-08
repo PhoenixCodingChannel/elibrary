@@ -1,6 +1,7 @@
 package com.example.elibrary.models.request;
 
 import com.example.elibrary.models.Student;
+import com.example.elibrary.models.enums.AccountStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ public class StudentCreateRequest {
                 .email(email)
                 .phone(phone)
                 .address(address)
+                .accountStatus(AccountStatus.ACTIVE)
                 .build();
     }
 }

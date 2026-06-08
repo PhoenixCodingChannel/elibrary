@@ -1,6 +1,7 @@
 package com.example.elibrary.models;
 
 import com.example.elibrary.models.enums.AccountStatus;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
