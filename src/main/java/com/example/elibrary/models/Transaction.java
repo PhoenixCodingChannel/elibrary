@@ -23,7 +23,7 @@ public class Transaction {
 
     private String externalId;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(value=EnumType.STRING)
     private TransactionType transactionType;
 
     private Double payment;

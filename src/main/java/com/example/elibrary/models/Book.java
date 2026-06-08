@@ -2,7 +2,6 @@ package com.example.elibrary.models;
 
 import com.example.elibrary.models.enums.Genre;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +26,7 @@ public class Book {
     private String name;
     private int cost;
 
+    @Enumerated(EnumType.STRING)
     private Genre genre;
 
     @ManyToOne
