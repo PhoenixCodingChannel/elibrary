@@ -38,7 +38,7 @@ public class Book {
     @JoinColumn
     private Student student;
 
-    @OneToMany(mappedBy = "book")
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private List<Transaction> transactions;
 
     @CreationTimestamp

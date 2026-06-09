@@ -58,4 +58,8 @@ public class BookService {
     public Optional<Book> findBookById(int bookId) {
         return bookRepository.findById(bookId);
     }
+
+    public Book save(Book  book){
+        return bookRepository.save(book);
+    }
 }

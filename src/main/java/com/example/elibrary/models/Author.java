@@ -1,6 +1,6 @@
 package com.example.elibrary.models;
 
-import jakarta.annotation.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,7 +25,8 @@ public class Author {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"author"})
     private List<Book> books;
 
     @CreationTimestamp

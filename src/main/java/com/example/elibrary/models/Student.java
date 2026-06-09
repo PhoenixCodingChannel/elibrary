@@ -39,7 +39,7 @@ public class Student {
     @OneToMany(mappedBy="student")
     private List<Book> books;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     private List<Transaction> transactions;
 
     @CreationTimestamp

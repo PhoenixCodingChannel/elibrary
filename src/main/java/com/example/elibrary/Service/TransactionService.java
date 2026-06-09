@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class TransactionService {
@@ -38,6 +39,18 @@ public class TransactionService {
             throw new TransactionServiceException("Book is not valid");
         }
 
+        return switch (transactionType) {
+            case "ISSUE" -> issueBookTransaction(student, bookById);
+            case "RETURN" -> returnBookTransaction(student, bookById);
+            default -> throw new TransactionServiceException("Transaction type not supported");
+        };
+
+    }
+
+
+
+    private String issueBookTransaction(Optional<Student> student, Optional<Book> bookById)
+            throws TransactionServiceException {
         //Check if book is available
         if(bookById.get().getStudent() !=null){
             throw new TransactionServiceException("Book is not available");
@@ -53,6 +66,55 @@ public class TransactionService {
 
         transactionRepository.save(transaction);
 
+        //Make the book unavailable for others
+        bookById.get().setStudent(student.get());
+        bookService.save(bookById.get());
         return transaction.getExternalId();
+
     }
+    private String returnBookTransaction(Optional<Student> student, Optional<Book> bookById)
+            throws TransactionServiceException {
+        //check if book is already issued
+        if(bookById.get().getStudent() ==null){
+            throw new TransactionServiceException("Book is not issued to any student");
+        }
+
+        //check if book is issued to the same student
+        if(bookById.get().getStudent().getId() != student.get().getId()){
+            throw new TransactionServiceException("Book is not issued to a different student");
+        }
+
+        Transaction issueTransaction = transactionRepository
+                .findTopByBookAndStudentAndTransactionTypeOrderByIdDesc(bookById.get(),student.get(),TransactionType.ISSUE);
+        //calculate fine
+        calculateFine(issueTransaction);
+
+        Transaction transaction = Transaction.builder()
+                .externalId(UUID.randomUUID().toString())
+                .transactionType(TransactionType.RETURN)
+                .payment((double)bookById.get().getCost()-calculateFine(issueTransaction))
+                .book(bookById.get())
+                .student(student.get())
+                .build();
+
+        transactionRepository.save(transaction);
+        return transaction.getExternalId();
+
+    }
+
+    private long calculateFine(Transaction issueTransaction) {
+
+        long bookIssueTime = issueTransaction.getCreatedOn().getTime();
+        long bookReturnTime = System.currentTimeMillis();
+
+        long differenceInMillis = bookReturnTime - bookIssueTime;
+        long daysPassed = TimeUnit.DAYS.convert(differenceInMillis, TimeUnit.MILLISECONDS);
+
+        if(daysPassed > 15){
+            return (daysPassed-15)* 10L;
+        }
+        return 0;
+    }
+
+
 }
